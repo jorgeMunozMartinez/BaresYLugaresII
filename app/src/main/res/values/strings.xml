@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Bares Y Lugares</string>
+    <string name="ivLogo">Logo de inicio de la aplicación</string>
+    <string name="ivLogoLogin">Logo de la aplicación</string>
+    <string name="txtUserName">User Name</string>
+    <string name="txtPsw">User Password</string>
+    <string name="btnLogin">Login</string>
+    <string name="btnNewUser">New User</string>
+    <string name="title_activity_menu">Menu</string>
+    <string name="title_activity_mapa">Map</string>
+</resources>
