@@ -3,6 +3,7 @@ package byl.baresylugares.Presentacion;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +37,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -50,6 +58,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Hashtable;
+import java.util.Map;
 
 import static android.view.Gravity.CENTER;
 
@@ -73,16 +83,23 @@ public class crearRecomendacion extends AppCompatActivity {
     private Bitmap bitmap;
     private String image;
     private LocationManager locationManager;
-    private String longitud = "";
-    private String latitud = "";
+    private String longitud;
+    private String latitud;
     private Usuario user;
     private String formattedDate;
     private Recomendacion recomendacion = null;
     private String funcion;
-    private LatLng latLng;
-    private byte[] bytes;
     private GestorRecomendaciones gestorRecomendaciones = new GestorRecomendaciones();
-
+    private String RECOM_URL = "https://baresylugares.webcindario.com/uploadRecomendacion.php";
+    private String KEY_NOMBRE = "nombre";
+    private String KEY_NOMBRE_TARJETA = "nombreTarjeta";
+    private String KEY_COMENTARIO = "comentario";
+    private String KEY_FECHA = "fecha";
+    private String KEY_USUARIO = "usuario";
+    private String KEY_TIPO = "tipo";
+    private String KEY_LONGITUD = "longitud";
+    private String KEY_LATITUD = "latitud";
+    private String KEY_IMAGEN = "imagen";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,56 +227,6 @@ public class crearRecomendacion extends AppCompatActivity {
                     latitud = String.valueOf(location2.getLatitude());
                     longitud = String.valueOf(location2.getLongitude());
                     showToast("Longitud: " + longitud + ", latitud: " + latitud);
-                } else {
-                    if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, new LocationListener() {
-                            @Override
-                            public void onLocationChanged(Location location) {
-                                latitud = String.valueOf(location.getLatitude());
-                                longitud = String.valueOf(location.getLongitude());
-                                showToast("Longitud: " + longitud + ", latitud: " + latitud);
-                            }
-
-                            @Override
-                            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                            }
-
-                            @Override
-                            public void onProviderEnabled(String provider) {
-
-                            }
-
-                            @Override
-                            public void onProviderDisabled(String provider) {
-
-                            }
-                        });
-                    } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, new LocationListener() {
-                            @Override
-                            public void onLocationChanged(Location location) {
-                                latitud = String.valueOf(location.getLatitude());
-                                longitud = String.valueOf(location.getLongitude());
-                                showToast("Longitud: " + longitud + ", latitud: " + latitud);
-                            }
-
-                            @Override
-                            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-                            }
-
-                            @Override
-                            public void onProviderEnabled(String provider) {
-
-                            }
-
-                            @Override
-                            public void onProviderDisabled(String provider) {
-
-                            }
-                        });
-                    }
                 }
             }
         }
@@ -306,39 +273,19 @@ public class crearRecomendacion extends AppCompatActivity {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
             imageUri = data.getData();
-
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-                imageView.setImageBitmap(bitmap);
-                image = BitMapToString(bitmap);
             } catch (Exception e) {
                 Log.d("Hola", "Error parsing bitmap");
             }
         } else if (resultCode == RESULT_OK && requestCode == PICK_PHOTO) {
             //  Bitmap bitmap = (Bitmap) data.getExtras().get("data");
             bitmap = BitmapFactory.decodeFile(pathToFile);
-
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
-            imageView.setImageBitmap(bitmap);
-            image = BitMapToString(bitmap);
         }
-    }
-
-    public String BitMapToString(Bitmap bitmap) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-        byte[] b = baos.toByteArray();
-        String temp = Base64.encodeToString(b, Base64.DEFAULT);
-        return temp;
-    }
-
-    public byte[] bitmapToBlop(Bitmap bitmap) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
-        byte[] bArray = bos.toByteArray();
-        return bArray;
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        imageView.setImageBitmap(bitmap);
+        byte[] imageBytes = stream.toByteArray();
+        image = Base64.encodeToString(imageBytes, Base64.DEFAULT);
     }
 
     public void newRecom(View view) {
@@ -352,8 +299,9 @@ public class crearRecomendacion extends AppCompatActivity {
                 showToast("Seleccione Bar o Lugar");
             } else {
                 if (longitud.equals("") || latitud.equals("")) {
-                    showToast("Coordenadas necesarias");
+                    showToast(longitud);
                 } else {
+
                     if (image == null) {
                         showToast("Necesaria una foto del lugar");
                     } else {
@@ -361,14 +309,43 @@ public class crearRecomendacion extends AppCompatActivity {
                         Date fecha = cal.getTime();
                         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                         formattedDate = dateFormat.format(fecha);
-                        recomendacion = new Recomendacion(nombre.getText().toString(),
-                                formattedDate, des.getText().toString(), user.getNombre(), latitud,
-                                longitud, image, tipo);
-                        if (!gestorRecomendaciones.insertRecomendacion(recomendacion)) {
-                            showToast("Error al almacenar la recomendación");
-                        } else {
-                            showToast("Recomendación creada correctamente");
-                        }
+                        final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor...", false, false);
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, RECOM_URL,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        loading.dismiss();
+                                        showToast(response);
+                                        Intent intent = new Intent(crearRecomendacion.this, Menu.class);
+                                        intent.putExtra("Usuario", user);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        loading.dismiss();
+                                        showToast(error.toString());
+                                    }
+                                }) {
+                            @Override
+                            protected Map<String, String> getParams() throws AuthFailureError {
+                                Map<String, String> params = new Hashtable<String, String>();
+                                params.put(KEY_NOMBRE_TARJETA, nombre.getText().toString());
+                                params.put(KEY_COMENTARIO, des.getText().toString());
+                                params.put(KEY_FECHA, formattedDate);
+                                params.put(KEY_USUARIO, user.getNombre());
+                                params.put(KEY_TIPO, tipo);
+                                Log.d("Hola", "++++" + longitud);
+                                params.put(KEY_LONGITUD, longitud);
+                                params.put(KEY_LATITUD, latitud);
+                                params.put(KEY_IMAGEN, image);
+                                return params;
+                            }
+                        };
+                        RequestQueue requestQueue = Volley.newRequestQueue(this);
+                        requestQueue.add(stringRequest);
                     }
                 }
             }

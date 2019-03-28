@@ -8,4 +8,7 @@
     <string name="btnNewUser">New User</string>
     <string name="title_activity_menu">Menu</string>
     <string name="title_activity_mapa">Map</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_iniciosesion">iniciosesion</string>
+    <string name="btnCreateUser">Nuevo Usuario</string>
 </resources>

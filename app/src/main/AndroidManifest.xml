@@ -25,8 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Presentacion.Login" />
-        <activity android:name=".Presentacion.CreateUser" />
+        <activity android:name=".Presentacion.crearUsuario" />
         <activity android:name=".Presentacion.Menu" />
         <activity android:name=".Presentacion.crearRecomendacion" />
         <activity android:name=".Presentacion.listarRecomendaciones" />
@@ -45,7 +44,11 @@
         <activity
             android:name=".mapa"
             android:label="@string/title_activity_mapa" />
-        <activity android:name=".Presentacion.mostarRecomendacion"></activity>
+        <activity android:name=".Presentacion.mostarRecomendacion" />
+        <activity
+            android:name=".Presentacion.inicioSesion"
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

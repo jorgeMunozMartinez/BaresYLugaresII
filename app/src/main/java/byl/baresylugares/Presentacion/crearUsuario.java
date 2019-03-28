@@ -36,7 +36,7 @@ import byl.baresylugares.R;
 
 import static android.view.Gravity.CENTER;
 
-public class CreateUser extends AppCompatActivity {
+public class crearUsuario extends AppCompatActivity {
     private EditText userName;
     private EditText userPsw;
     private EditText userPswII;
@@ -77,7 +77,7 @@ public class CreateUser extends AppCompatActivity {
                             public void onResponse(String s) {
                                 loading.dismiss();
                                 showToast(s);
-                                Intent intent = new Intent(CreateUser.this, Login.class);
+                                Intent intent = new Intent(crearUsuario.this, inicioSesion.class);
                                 startActivity(intent);
                                 finish();
                             }
@@ -111,11 +111,20 @@ public class CreateUser extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==android.R.id.home){
+            Intent intent = new Intent(crearUsuario.this, inicioSesion.class);
+            startActivity(intent);
+            finish();
+        }
+        return true;
+    }
 
     public void showToast(String r) {
         Toast toast = new Toast(getApplicationContext());
         toast.setGravity(CENTER, 0, 0);
-        TextView view = new TextView(CreateUser.this);
+        TextView view = new TextView(crearUsuario.this);
         view.setBackgroundColor(Color.DKGRAY);
         view.setTextColor(Color.WHITE);
         view.setText("\"" + r + "\"");

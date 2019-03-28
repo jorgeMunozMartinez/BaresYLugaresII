@@ -1,21 +1,16 @@
 package byl.baresylugares.Presentacion;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.net.NetworkInfo;;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,14 +21,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Hashtable;
@@ -45,7 +36,7 @@ import byl.baresylugares.R;
 
 import static android.view.Gravity.CENTER;
 
-public class Login extends AppCompatActivity {
+public class inicioSesion extends AppCompatActivity {
 
     private EditText userName;
     private EditText userPsw;
@@ -54,17 +45,21 @@ public class Login extends AppCompatActivity {
     private String LOGIN_URL = "https://baresylugares.webcindario.com/login.php";
     private Usuario usuario = null;
 
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbarmenu, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("LogIn");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setTitle("Bares Y Lugares");
         if (!comprobarConexion()) {
             showToast("Sin conexión a internet");
         }
@@ -82,30 +77,31 @@ public class Login extends AppCompatActivity {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            try{
+                            try {
                                 JSONObject jsonObject = new JSONObject(response);
                                 loading.dismiss();
-                                if(jsonObject.getBoolean("error")){
+                                if (jsonObject.getBoolean("error")) {
                                     String message = jsonObject.optString("message");
                                     showToast(message);
-                                    Log.d("Hola",message);
-                                }else {
+                                    Log.d("Hola", message);
+                                } else {
                                     JSONArray jsonArray = jsonObject.getJSONArray("usuarios");
-                                    Log.d("Hola", ""+jsonArray.length());
-                                    if(jsonArray.length()==1) {
+                                    Log.d("Hola", "" + jsonArray.length());
+                                    if (jsonArray.length() == 1) {
                                         for (int i = 0; i < jsonArray.length(); i++) {
                                             JSONObject jsonObject1 = jsonArray.getJSONObject(i);
                                             String nombre = jsonObject1.optString("nombre");
                                             String psw = jsonObject1.optString("psw");
                                             String email = jsonObject1.optString("email");
                                             usuario = new Usuario(nombre, psw, email);
-                                            Log.d("Hola", nombre+", "+psw+", "+email);
+                                            inicioSesion();
+                                            Log.d("Hola", nombre + ", " + psw + ", " + email);
                                         }
-                                    }else{
-                                        showToast("Error en el login"+ jsonArray.length());
+                                    } else {
+                                        showToast("Error en el login" + jsonArray.length());
                                     }
                                 }
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 Log.d("Hola", e.getMessage());
                             }
                         }
@@ -124,7 +120,7 @@ public class Login extends AppCompatActivity {
                     Map<String, String> params = new Hashtable<String, String>();
                     params.put(KEY_NOMBRE, nombre);
                     params.put(KEY_PSW, psw);
-                    Log.d("Hola", nombre+", "+psw);
+                    Log.d("Hola", nombre + ", " + psw);
                     return params;
                 }
             };
@@ -134,7 +130,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void inicioSesion() {
-        Intent intent = new Intent(Login.this, Menu.class);
+        Intent intent = new Intent(inicioSesion.this, Menu.class);
         intent.putExtra("Usuario", usuario);
         startActivity(intent);
         finish();
@@ -142,7 +138,7 @@ public class Login extends AppCompatActivity {
 
 
     public void newUser(View view) {
-        Intent intent = new Intent(Login.this, CreateUser.class);
+        Intent intent = new Intent(inicioSesion.this, crearUsuario.class);
         startActivity(intent);
         finish();
     }
@@ -150,7 +146,7 @@ public class Login extends AppCompatActivity {
     public void showToast(String r) {
         Toast toast = new Toast(getApplicationContext());
         toast.setGravity(CENTER, 0, 0);
-        TextView view = new TextView(Login.this);
+        TextView view = new TextView(inicioSesion.this);
         view.setBackgroundColor(Color.DKGRAY);
         view.setTextColor(Color.WHITE);
         view.setText("\"" + r + "\"");

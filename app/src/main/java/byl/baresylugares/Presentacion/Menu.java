@@ -63,7 +63,7 @@ public class Menu extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==android.R.id.home){
-            Intent intent = new Intent(Menu.this, Login.class);
+            Intent intent = new Intent(Menu.this, inicioSesion.class);
             startActivity(intent);
             finish();
         }

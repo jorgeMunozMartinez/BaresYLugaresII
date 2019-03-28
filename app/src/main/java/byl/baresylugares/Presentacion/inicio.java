@@ -35,7 +35,7 @@ public class inicio extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Intent intent = new Intent(inicio.this, Login.class);
+                Intent intent = new Intent(inicio.this, inicioSesion.class);
                 startActivity(intent);
                 finish();
             }
