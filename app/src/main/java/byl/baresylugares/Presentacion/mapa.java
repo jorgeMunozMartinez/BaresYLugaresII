@@ -88,6 +88,9 @@ public class mapa extends AppCompatActivity implements OnMapReadyCallback, TaskL
             @Override
             public void onClick(View v) {
                 GPS();
+                LatLng sydney = new LatLng(Double.parseDouble(latitud), Double.parseDouble(longitud));
+                map.addMarker(new MarkerOptions().position(sydney).title("origen"));
+                map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
                 new FetchURL(mapa.this).execute(getUrl(  "driving"), "driving");
 
             }
@@ -108,8 +111,8 @@ public class mapa extends AppCompatActivity implements OnMapReadyCallback, TaskL
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map=googleMap;
-        LatLng sydney = new LatLng(Integer.parseInt(recomendacion.getLatitud()), Integer.parseInt(recomendacion.getLongitud()));
-        map.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        LatLng sydney = new LatLng(Double.parseDouble(recomendacion.getLatitud()), Double.parseDouble(recomendacion.getLongitud()));
+        map.addMarker(new MarkerOptions().position(sydney).title(recomendacion.getNombreTajeta()));
         map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 
