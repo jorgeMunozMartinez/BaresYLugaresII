@@ -1,16 +1,12 @@
 package byl.baresylugares.Presentacion;
 
-
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
@@ -20,15 +16,14 @@ import android.net.Uri;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -44,12 +39,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.model.LatLng;
+import com.squareup.picasso.Picasso;
 
 import byl.baresylugares.Dominio.Recomendacion;
 import byl.baresylugares.Dominio.Usuario;
-import byl.baresylugares.Persistencia.GestorRecomendaciones;
 import byl.baresylugares.R;
 
 import java.io.ByteArrayOutputStream;
@@ -83,15 +76,15 @@ public class crearRecomendacion extends AppCompatActivity {
     private Bitmap bitmap;
     private String image;
     private LocationManager locationManager;
+    private LocationListener locationListener;
     private String longitud;
     private String latitud;
     private Usuario user;
     private String formattedDate;
     private Recomendacion recomendacion = null;
     private String funcion;
-    private GestorRecomendaciones gestorRecomendaciones = new GestorRecomendaciones();
     private String RECOM_URL = "https://baresylugares.webcindario.com/uploadRecomendacion.php";
-    private String KEY_NOMBRE = "nombre";
+    private String RECOM_URL_BORRAR = "https://baresylugares.webcindario.com/borrarRecomendacion.php";
     private String KEY_NOMBRE_TARJETA = "nombreTarjeta";
     private String KEY_COMENTARIO = "comentario";
     private String KEY_FECHA = "fecha";
@@ -100,6 +93,15 @@ public class crearRecomendacion extends AppCompatActivity {
     private String KEY_LONGITUD = "longitud";
     private String KEY_LATITUD = "latitud";
     private String KEY_IMAGEN = "imagen";
+    private String KEY_ID = "id";
+    //$actualpath = "https://baresylugares.webcindario.com/ImagenConNombre/$path";
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbarmenu, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,27 +118,26 @@ public class crearRecomendacion extends AppCompatActivity {
         user = (Usuario) getIntent().getSerializableExtra("Usuario");
         funcion = (String) getIntent().getSerializableExtra("Tipo");
 
+
         btnImagen = findViewById(R.id.btnGaleria);
         btnFoto = findViewById(R.id.btnFoto);
-        btnGps = findViewById(R.id.btnGps);
         imageView = findViewById(R.id.imgFoto);
+        btnGps = findViewById(R.id.btnGps);
 
-        if (!gestorRecomendaciones.conectSQL()) {
-            conectar();
-        }
-        if (funcion.equals("Propia")) {
-            recomendacion = (Recomendacion) getIntent().getSerializableExtra("Recom");
+        if (funcion.equals("modificar")) {
+            recomendacion = (Recomendacion) getIntent().getSerializableExtra("Recomendacion");
             nombre = findViewById(R.id.txtNombreSitio);
-            des = findViewById(R.id.txtNombreSitio);
+            des = findViewById(R.id.txtComentario);
             es = findViewById(R.id.txtEs);
             nombre.setText(recomendacion.getNombreTajeta());
             des.setText(recomendacion.getComentario());
             longitud = recomendacion.getLongitud();
             latitud = recomendacion.getLatitud();
             formattedDate = recomendacion.getFecha();
-            image = recomendacion.getImagenBit();
             es.setText(recomendacion.getTipo());
-
+            tipo = recomendacion.getTipo();
+            Picasso.with(this).load(recomendacion.getImagenBit()).into(imageView);
+            image = recomendacion.getImagenBit();
         }
 
         btnFoto.setOnClickListener(new View.OnClickListener() {
@@ -160,33 +161,10 @@ public class crearRecomendacion extends AppCompatActivity {
             }
         });
 
-    }
 
-    public void conectar() {
-        new AlertDialog.Builder(this)
-                .setTitle("Conexión BBDD").setMessage("Reintentado comexión con la BBDD")
-                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(crearRecomendacion.this, crearRecomendacion.class);
-                        intent.putExtra("Usuario", user);
-                        startActivity(intent);
-                        finish();
-                    }
-                })
-                .setNegativeButton("cancell", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(crearRecomendacion.this, Menu.class);
-                        intent.putExtra("Usuario", user);
-                        startActivity(intent);
-                        finish();
-                    }
-                }).create().show();
     }
 
     public void GPS() {
-        Log.d("Hola", "GPS");
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             new android.app.AlertDialog.Builder(crearRecomendacion.this)
@@ -197,7 +175,7 @@ public class crearRecomendacion extends AppCompatActivity {
                             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                         }
                     })
-                    .setNegativeButton("cancell", new DialogInterface.OnClickListener() {
+                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -214,6 +192,8 @@ public class crearRecomendacion extends AppCompatActivity {
                 Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 Location location1 = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 Location location2 = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+                Location location3 = locationManager.getLastKnownLocation(LOCATION_SERVICE);
+
 
                 if (location != null) {
                     latitud = String.valueOf(location.getLatitude());
@@ -227,6 +207,37 @@ public class crearRecomendacion extends AppCompatActivity {
                     latitud = String.valueOf(location2.getLatitude());
                     longitud = String.valueOf(location2.getLongitude());
                     showToast("Longitud: " + longitud + ", latitud: " + latitud);
+                } else if (location3 != null) {
+                    latitud = String.valueOf(location3.getLatitude());
+                    longitud = String.valueOf(location3.getLongitude());
+                    showToast("Longitud: " + longitud + ", latitud: " + latitud);
+                }
+                if (longitud == null && latitud == null) {
+                    locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+                    locationListener = new LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            latitud = String.valueOf(location.getLatitude());
+                            longitud = String.valueOf(location.getLongitude());
+                            showToast("Longitud: " + longitud + ", latitud: " + latitud);
+                        }
+
+                        @Override
+                        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                        }
+
+                        @Override
+                        public void onProviderEnabled(String provider) {
+
+                        }
+
+                        @Override
+                        public void onProviderDisabled(String provider) {
+
+                        }
+                    };
+                    locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
                 }
             }
         }
@@ -239,6 +250,13 @@ public class crearRecomendacion extends AppCompatActivity {
 
             ActivityCompat.requestPermissions(crearRecomendacion.this, new String[]{Manifest.permission.CAMERA}, REQUEST_LOCATION);
 
+        } else if
+        (ActivityCompat.checkSelfPermission(crearRecomendacion.this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+                        (crearRecomendacion.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(crearRecomendacion.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_LOCATION);
+
         } else {
             File path = Environment.getExternalStorageDirectory();
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -246,13 +264,13 @@ public class crearRecomendacion extends AppCompatActivity {
             pathToFile = path.getAbsolutePath()
                     + "/DCIM/Camera/" + captureTime + ".jpg";
             File foto = new File(pathToFile);
-            Log.d("photo", pathToFile);
             Uri output = Uri.fromFile(foto);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, output);
             StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
             StrictMode.setVmPolicy(builder.build());
             startActivityForResult(Intent.createChooser(intent, "Hacer Foto"), PICK_PHOTO);
         }
+
     }
 
     public void openGallery() {
@@ -289,8 +307,11 @@ public class crearRecomendacion extends AppCompatActivity {
     }
 
     public void newRecom(View view) {
+        if (funcion.equals("modificar")) {
+            borrar();
+        }
         nombre = findViewById(R.id.txtNombreSitio);
-        des = findViewById(R.id.txtNombreSitio);
+        des = findViewById(R.id.txtComentario);
 
         if (nombre.getText().length() == 0 && des.getText().length() == 0) {
             showToast("Rellene los campos de texto");
@@ -298,10 +319,9 @@ public class crearRecomendacion extends AppCompatActivity {
             if (tipo.equals("")) {
                 showToast("Seleccione Bar o Lugar");
             } else {
-                if (longitud.equals("") || latitud.equals("")) {
-                    showToast(longitud);
+                if (longitud == null || latitud == null) {
+                    showToast("Localización necesaria");
                 } else {
-
                     if (image == null) {
                         showToast("Necesaria una foto del lugar");
                     } else {
@@ -337,7 +357,6 @@ public class crearRecomendacion extends AppCompatActivity {
                                 params.put(KEY_FECHA, formattedDate);
                                 params.put(KEY_USUARIO, user.getNombre());
                                 params.put(KEY_TIPO, tipo);
-                                Log.d("Hola", "++++" + longitud);
                                 params.put(KEY_LONGITUD, longitud);
                                 params.put(KEY_LATITUD, latitud);
                                 params.put(KEY_IMAGEN, image);
@@ -350,6 +369,33 @@ public class crearRecomendacion extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    public void borrar() {
+        final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor...", false, false);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, RECOM_URL_BORRAR,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        loading.dismiss();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        loading.dismiss();
+                        showToast("error" + error.toString());
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new Hashtable<String, String>();
+                params.put(KEY_ID, recomendacion.getid().toString());
+                return params;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 
     public void showToast(String r) {

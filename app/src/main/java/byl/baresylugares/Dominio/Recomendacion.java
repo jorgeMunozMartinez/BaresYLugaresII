@@ -13,6 +13,7 @@ public class Recomendacion implements Serializable {
     private String longitud;
     private String imagenBit;
     private String tipo;
+    private Integer id;
 
     public Recomendacion(String nombreTajeta, String fecha, String comentario, String usuario, String latitud, String longitud, String imagenBit, String tipo) {
         this.nombreTajeta = nombreTajeta;
@@ -25,6 +26,12 @@ public class Recomendacion implements Serializable {
         this.tipo = tipo;
     }
 
+    public void setid(Integer id){
+        this.id=id;
+    }
+    public Integer getid(){
+        return id;
+    }
     public String getLatitud() {
         return latitud;
     }

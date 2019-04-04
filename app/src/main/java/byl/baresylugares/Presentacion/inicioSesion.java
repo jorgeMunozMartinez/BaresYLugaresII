@@ -31,7 +31,6 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import byl.baresylugares.Dominio.Usuario;
-import byl.baresylugares.Persistencia.GestorUsuario;
 import byl.baresylugares.R;
 
 import static android.view.Gravity.CENTER;
@@ -83,10 +82,8 @@ public class inicioSesion extends AppCompatActivity {
                                 if (jsonObject.getBoolean("error")) {
                                     String message = jsonObject.optString("message");
                                     showToast(message);
-                                    Log.d("Hola", message);
                                 } else {
                                     JSONArray jsonArray = jsonObject.getJSONArray("usuarios");
-                                    Log.d("Hola", "" + jsonArray.length());
                                     if (jsonArray.length() == 1) {
                                         for (int i = 0; i < jsonArray.length(); i++) {
                                             JSONObject jsonObject1 = jsonArray.getJSONObject(i);
@@ -95,7 +92,6 @@ public class inicioSesion extends AppCompatActivity {
                                             String email = jsonObject1.optString("email");
                                             usuario = new Usuario(nombre, psw, email);
                                             inicioSesion();
-                                            Log.d("Hola", nombre + ", " + psw + ", " + email);
                                         }
                                     } else {
                                         showToast("Error en el login" + jsonArray.length());
@@ -120,7 +116,6 @@ public class inicioSesion extends AppCompatActivity {
                     Map<String, String> params = new Hashtable<String, String>();
                     params.put(KEY_NOMBRE, nombre);
                     params.put(KEY_PSW, psw);
-                    Log.d("Hola", nombre + ", " + psw);
                     return params;
                 }
             };

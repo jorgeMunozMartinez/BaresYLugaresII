@@ -1,27 +1,41 @@
 package byl.baresylugares.Presentacion;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
-import android.view.Gravity;
+import android.util.Log;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map;
 
 import byl.baresylugares.Dominio.Recomendacion;
 import byl.baresylugares.Dominio.Usuario;
-import byl.baresylugares.Persistencia.GestorRecomendaciones;
+import byl.baresylugares.MapsActivity;
 import byl.baresylugares.R;
 
 import static android.view.Gravity.CENTER;
@@ -29,138 +43,186 @@ import static android.view.Gravity.CENTER;
 public class listarRecomendaciones extends AppCompatActivity {
 
     private String tipo;
-    private LinearLayout tareasL;
-    private GestorRecomendaciones gestorRecomendaciones = new GestorRecomendaciones();
-    private ArrayList<Recomendacion> listaR = new ArrayList<Recomendacion>();
+    private ArrayList<Recomendacion> listaR;
     private Usuario usuario;
-    private Recomendacion rem;
+    private String RECOM_URL = "https://baresylugares.webcindario.com/getRecomendacion.php";
+    private String RECOM_PROPIA_URL = "https://baresylugares.webcindario.com/getRecomendacionPropia.php";
+    private String RECOM_URL_BORRAR = "https://baresylugares.webcindario.com/borrarRecomendacion.php";
+    private String KEY_TIPO = "tipo";
+    private String KEY_NOMBRE = "nombre";
+    private String KEY = null;
+    private String valor = null;
+    private RecyclerView lstRecomendaciones;
+    private AdaptadorLista adaptadorTipo;
+    private AdaptadorListaPropio adaptadorListaPropio;
+    private Context context;
+    private String modelo;
+    private String id;
+    private String KEY_ID = "id";
+
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbarmenu, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        context = this;
+        listaR = new ArrayList<Recomendacion>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listar_recomendaciones);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setTitle("Listando Recomendaciones");
+        toolbar.setTitle("Recomendaciones");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         tipo = (String) getIntent().getSerializableExtra("Tipo");
         usuario = (Usuario) getIntent().getSerializableExtra("Usuario");
-        tareasL = findViewById(R.id.itReco);
-
-
-
-        if (!gestorRecomendaciones.conectSQL()) {
-            conectar();
-        }
         listar();
     }
 
-    public void conectar() {
-        new AlertDialog.Builder(this)
-                .setTitle("Conexión BBDD").setMessage("Permiso necesario para leer imagenes de su memoria")
-                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(listarRecomendaciones.this, listarRecomendaciones.class);
-                        intent.putExtra("Usuario", usuario);
-                        startActivity(intent);
-                        finish();
-                    }
-                })
-                .setNegativeButton("cancell", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(listarRecomendaciones.this, Menu.class);
-                        intent.putExtra("Usuario", usuario);
-                        startActivity(intent);
-                        finish();
-                    }
-                }).create().show();
-    }
 
-    private void listar(){
-        if (tipo.equals("Bar")) {
-            listaR = getRecomendaciones("Bar");
-        } else if(tipo.equals("Lugar")) {
-            listaR = getRecomendaciones("Lugar");
-        } else if(tipo.equals("Propias")){
-            listaR = gestorRecomendaciones.listRecomendacionUser(usuario.getNombre());
+    private void listar() {
+        String ruta = null;
+
+        if (tipo.equals("bar") || tipo.equals("lugar")) {
+            ruta = RECOM_URL;
+            KEY = KEY_TIPO;
+            valor = tipo;
+            modelo = "no";
+        } else if (tipo.equals("modificar")) {
+            ruta = RECOM_PROPIA_URL;
+            KEY = KEY_NOMBRE;
+            valor = usuario.getNombre();
+            modelo = "modificar";
         }
-        comprobar();
-
-    }
-
-    private void comprobar(){
-        if (listaR.size() == 0) {
-            showToast("No hay recomedaciones de " + tipo);
-        } else {
-            showToast("Mostrando las recomendaciones de " + tipo);
-            tareasL.removeAllViews();
-            for (int i =0 ;i<listaR.size();i++){
-                rem=listaR.get(i);
-                ImageView iv=new ImageView(getApplicationContext());
-                iv.setImageResource(R.drawable.ic_right);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams((int) convertToPixel(40), (int) convertToPixel(40));
-                iv.setLayoutParams(layoutParams);
-                iv.setTag(""+i);
-                iv.setOnClickListener(new View.OnClickListener() {
+        final ProgressDialog loading = ProgressDialog.show(this, "Obteniendo recomendaciones...", "Espere por favor...", false, false);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ruta,
+                new Response.Listener<String>() {
                     @Override
-                    public void onClick(View v) {
-                        click();
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            loading.dismiss();
+                            if (jsonObject.getBoolean("error")) {
+                                String message = jsonObject.optString("message");
+                                showToast(message);
+                            } else {
+                                JSONArray jsonArray = jsonObject.getJSONArray("recomendaciones");
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+                                    Integer id = jsonObject1.optInt("id");
+                                    String nombreTarjeta = jsonObject1.optString("nombreTarjeta");
+                                    String comentario = jsonObject1.optString("comentario");
+                                    String fecha = jsonObject1.optString("fecha");
+                                    String usuario = jsonObject1.optString("usuario");
+                                    String tipo = jsonObject1.optString("tipo");
+                                    String longitud = jsonObject1.optString("longitud");
+                                    String latitud = jsonObject1.optString("latitud");
+                                    String imagen = jsonObject1.optString("imagen");
+                                    Recomendacion rem = new Recomendacion(nombreTarjeta, fecha, comentario
+                                            , usuario, latitud, longitud, imagen, tipo);
+                                    rem.setid(id);
+                                    listaR.add(rem);
+
+                                    showToast("Mostrando recomendaciones, hay: " + listaR.size());
+                                    lstRecomendaciones = findViewById(R.id.lstRecomendaciones);
+                                    RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+                                    lstRecomendaciones.setLayoutManager(mLayoutManager);
+                                    if (modelo.equals("modificar")) {
+                                        adaptadorListaPropio = new AdaptadorListaPropio(context, listaR);
+                                        lstRecomendaciones.setAdapter(adaptadorListaPropio);
+                                        adaptadorListaPropio.setOnItemClickListener(new AdaptadorListaPropio.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(int position) {
+                                                click(listaR.get(position));
+                                            }
+
+                                            @Override
+                                            public void onItenClickBorrar(int position) {
+                                                borrar(listaR.get(position));
+                                            }
+
+                                            @Override
+                                            public void onItemClickGPS(int position) {
+                                                Gps(listaR.get(position));
+                                            }
+                                        });
+                                    } else {
+                                        adaptadorTipo = new AdaptadorLista(context, listaR);
+                                        lstRecomendaciones.setAdapter(adaptadorTipo);
+                                        adaptadorTipo.setOnItemClickListener(new AdaptadorLista.OnItemClickListener() {
+                                            @Override
+                                            public void onItemClick(int position) {
+                                                click(listaR.get(position));
+                                            }
+
+                                            @Override
+                                            public void onItemClickGPS(int position) {
+                                                Gps(listaR.get(position));
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.d("Hola", e.getMessage());
+                        }
                     }
-                });
-                LinearLayout mil=new LinearLayout(getApplicationContext());
-                if(i==0){
-                    mil.setPadding(5, 5, 5, 5);
-                }else{
-                    mil.setPadding(5, 0, 5, 5);
-                }
-                mil.setGravity(Gravity.CENTER);
-                mil.setBackgroundResource(R.drawable.fondo);
-                TextView tv=new TextView(listarRecomendaciones.this);
-                tv.setText("Nombre: "+listaR.get(i).getNombreTajeta()+"\n"+"Fecha: "
-                +listaR.get(i).getFecha());
-                if(i==0){
-                    tv.setPadding(0, 2, 2, 2);
-                }else{
-                    tv.setPadding(0, 0, 2, 2);
-                }
-                tv.setHeight((int) convertToPixel(60));
-                tv.setTextSize(18);
-                tv.setWidth((int) convertToPixel(250));
-                tv.setGravity(Gravity.CENTER_VERTICAL);
-                mil.addView(tv);
-                mil.addView(iv);
-                tareasL.addView(mil);
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        loading.dismiss();
+                        showToast("Error obteniedo recomendacioones Código Error: " + volleyError.getMessage());
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new Hashtable<String, String>();
+                Log.d("Hola", valor);
+                params.put(KEY, valor);
+                return params;
             }
-        }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 
-    private void click(){
-        if(tipo.equals("Propias")){
-            Intent intent = new Intent(listarRecomendaciones.this, crearRecomendacion.class);
+    private void Gps(Recomendacion r){
+        Intent intent = new Intent(listarRecomendaciones.this, mapa.class);
+        intent.putExtra("Usuario", usuario);
+        intent.putExtra("Recomendacion",r);
+        intent.putExtra("Tipo", tipo);
+        startActivity(intent);
+        finish();
+    }
+
+
+    private void click(Recomendacion r) {
+        if (tipo.equals("modificar")) {
+            Intent intent = new Intent(context, crearRecomendacion.class);
             intent.putExtra("Usuario", usuario);
-            intent.putExtra("Recom", rem);
+            intent.putExtra("Recomendacion", r);
             intent.putExtra("Tipo", tipo);
             startActivity(intent);
             finish();
-        }else{
-            Intent intent = new Intent(listarRecomendaciones.this, mostarRecomendacion.class);
+        } else {
+
+            Intent intent = new Intent(context, mostarRecomendacion.class);
             intent.putExtra("Usuario", usuario);
-            intent.putExtra("Recom", rem);
+            intent.putExtra("Recomendacion", r);
             intent.putExtra("Tipo", tipo);
             startActivity(intent);
             finish();
         }
-    }
-
-    private ArrayList<Recomendacion> getRecomendaciones(String tipo) {
-        ArrayList<Recomendacion> reco = gestorRecomendaciones.listRecomendacion(tipo);
-        return reco;
     }
 
     public void showToast(String r) {
@@ -174,20 +236,47 @@ public class listarRecomendaciones extends AppCompatActivity {
         toast.setView(view);
         toast.show();
     }
-    private float convertToPixel(int n){
-        Resources r = getResources();
-        float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, n, r.getDisplayMetrics());
-        return px;
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId()==android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             Intent intent = new Intent(listarRecomendaciones.this, Menu.class);
             intent.putExtra("Usuario", usuario);
             startActivity(intent);
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+    public void borrar(Recomendacion r){
+        id = r.getid().toString();
+        final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor...", false, false);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, RECOM_URL_BORRAR,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        loading.dismiss();
+                        Intent intent = new Intent(listarRecomendaciones.this, listarRecomendaciones.class);
+                        intent.putExtra("Usuario", usuario);
+                        intent.putExtra("Tipo", "modificar");
+                        startActivity(intent);
+                        finish();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        loading.dismiss();
+                        showToast("error"+error.toString());
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new Hashtable<String, String>();
+                params.put(KEY_ID, id);
+                return params;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
     }
 }

@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -30,8 +31,6 @@ import java.sql.Connection;
 import java.util.Hashtable;
 import java.util.Map;
 
-import byl.baresylugares.Dominio.Usuario;
-import byl.baresylugares.Persistencia.GestorUsuario;
 import byl.baresylugares.R;
 
 import static android.view.Gravity.CENTER;
@@ -45,6 +44,13 @@ public class crearUsuario extends AppCompatActivity {
     private String KEY_PSW = "psw";
     private String KEY_EMAIL = "email";
     private String UPLOAD_URL = "https://baresylugares.webcindario.com/createUser.php";
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbarmenu, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,17 +1,15 @@
 package byl.baresylugares.Presentacion;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
+import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import byl.baresylugares.Dominio.Recomendacion;
 import byl.baresylugares.Dominio.Usuario;
@@ -21,6 +19,14 @@ public class mostarRecomendacion extends AppCompatActivity {
 
     private Usuario usuario;
     private String tipo;
+    private Recomendacion recomendacion;
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.toolbarmenu, menu);
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,30 +44,18 @@ public class mostarRecomendacion extends AppCompatActivity {
         tipo = (String) getIntent().getSerializableExtra("Tipo");
 
 
-        Recomendacion recomendacion = (Recomendacion) getIntent().getSerializableExtra("Recom");
-        toolbar.setTitle("Mostrando Recomendación de: " +recomendacion.getUsuario());
-        EditText nombre = findViewById(R.id.lblNombre);
+        recomendacion = (Recomendacion) getIntent().getSerializableExtra("Recomendacion");
+        toolbar.setTitle("Mostrando Recomendación");
+        EditText nombre = findViewById(R.id.lblFechaLugar);
         EditText des = findViewById(R.id.lblDes);
-        ImageView imageView = findViewById(R.id.ivImg);
         nombre.setEnabled(false);
         nombre.setText(recomendacion.getNombreTajeta());
         des.setEnabled(false);
         des.setText(recomendacion.getComentario());
-        Bitmap img = StringToBitMap(recomendacion.getImagenBit());
-        imageView.setImageBitmap(img);
+        ImageView imageView1 = findViewById(R.id.ivImg);
+        Picasso.with(this).load(recomendacion.getImagenBit()).into(imageView1);
     }
 
-    public Bitmap StringToBitMap(String encodedString) {
-        try {
-            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
-            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0,
-                    encodeByte.length);
-            return bitmap;
-        } catch (Exception e) {
-            e.getMessage();
-            return null;
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

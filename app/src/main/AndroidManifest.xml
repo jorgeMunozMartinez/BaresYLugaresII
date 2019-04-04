@@ -2,9 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="byl.baresylugares">
 
+
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -29,6 +32,9 @@
         <activity android:name=".Presentacion.Menu" />
         <activity android:name=".Presentacion.crearRecomendacion" />
         <activity android:name=".Presentacion.listarRecomendaciones" />
+        <activity android:name=".Presentacion.mostarRecomendacion" />
+        <activity android:name=".Presentacion.inicioSesion" />
+        <activity android:name=".Presentacion.mapa" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -41,14 +47,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+
         <activity
-            android:name=".mapa"
-            android:label="@string/title_activity_mapa" />
-        <activity android:name=".Presentacion.mostarRecomendacion" />
-        <activity
-            android:name=".Presentacion.inicioSesion"
-            android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme" />
+            android:name=".MapsActivity"
+            android:label="@string/title_activity_maps"></activity>
     </application>
 
 </manifest>
