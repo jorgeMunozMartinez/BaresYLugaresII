@@ -31,7 +31,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -40,11 +39,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.squareup.picasso.Picasso;
-
 import byl.baresylugares.Dominio.Recomendacion;
 import byl.baresylugares.Dominio.Usuario;
 import byl.baresylugares.R;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.DateFormat;

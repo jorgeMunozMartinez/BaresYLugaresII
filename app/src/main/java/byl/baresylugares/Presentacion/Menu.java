@@ -7,7 +7,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
 import byl.baresylugares.Dominio.Usuario;
 import byl.baresylugares.R;
 
