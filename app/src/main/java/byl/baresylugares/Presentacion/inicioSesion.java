@@ -86,7 +86,7 @@ public class inicioSesion extends AppCompatActivity {
                                             String psw = jsonObject1.optString("psw");
                                             String email = jsonObject1.optString("email");
                                             usuario = new Usuario(nombre, psw, email);
-                                            inicioSesion();
+                                            InicioSesion();
                                         }
                                     } else {
                                         showToast("Error en el login" + jsonArray.length());
@@ -119,7 +119,7 @@ public class inicioSesion extends AppCompatActivity {
         }
     }
 
-    private void inicioSesion() {
+    private void InicioSesion() {
         Intent intent = new Intent(inicioSesion.this, Menu.class);
         intent.putExtra("Usuario", usuario);
         startActivity(intent);
