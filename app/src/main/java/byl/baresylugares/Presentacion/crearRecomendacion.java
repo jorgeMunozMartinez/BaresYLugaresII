@@ -31,7 +31,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -347,7 +346,7 @@ public class crearRecomendacion extends AppCompatActivity {
                                     }
                                 }) {
                             @Override
-                            protected Map<String, String> getParams() throws AuthFailureError {
+                            protected Map<String, String> getParams() {
                                 Map<String, String> params = new Hashtable<String, String>();
                                 params.put(KEY_NOMBRE_TARJETA, nombre.getText().toString());
                                 params.put(KEY_COMENTARIO, des.getText().toString());
@@ -385,7 +384,7 @@ public class crearRecomendacion extends AppCompatActivity {
                     }
                 }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new Hashtable<String, String>();
                 params.put(KEY_ID, recomendacion.getid().toString());
                 return params;

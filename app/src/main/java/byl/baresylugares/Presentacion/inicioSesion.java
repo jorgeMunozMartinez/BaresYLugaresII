@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -106,7 +105,7 @@ public class inicioSesion extends AppCompatActivity {
                         }
                     }) {
                 @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
+                protected Map<String, String> getParams(){
                     String nombre = userName.getText().toString();
                     String psw = userPsw.getText().toString();
                     Map<String, String> params = new Hashtable<String, String>();
