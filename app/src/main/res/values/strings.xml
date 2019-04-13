@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Bares Y Lugares</string>
-    <string name="ivLogo">Logo de inicio de la aplicación</string>
-    <string name="ivLogoLogin">Logo de la aplicación</string>
+    <string name="ivLogo" translatable="false">Logo de inicio de la aplicación</string>
     <string name="txtUserName">User Name</string>
     <string name="txtPsw">User Password</string>
     <string name="btnLogin">Login</string>
@@ -9,7 +8,26 @@
     <string name="title_activity_menu">Menu</string>
     <string name="title_activity_mapa">Map</string>
     <string name="title_activity_login">Login</string>
-    <string name="title_activity_iniciosesion">iniciosesion</string>
+    <string name="title_activity_iniciosesion" translatable="false">iniciosesion</string>
     <string name="btnCreateUser">Nuevo Usuario</string>
     <string name="title_activity_maps">Map</string>
+    <string name="btnBares">RECOMENDACIONES  BARES</string>
+    <string name="btnLugares">Recomendaciones  lugares</string>
+    <string name="btnCrear">Crear recomendación</string>
+    <string name="btnModificar">Modificar mis recomendaciones</string>
+    <string name="txtUsuario">Usuario</string>
+    <string name="txtPassword">Contraseña</string>
+    <string name="btnGPSllegar">Como llegar</string>
+    <string name="txtUsuarioNombre">nombre de usuario</string>
+    <string name="txtMail">Dirección de Correo</string>
+    <string name="txtRepetirContra">Repita la contraseña</string>
+    <string name="txtNombreLugar">Nombre</string>
+    <string name="txtDescrip">Descripción</string>
+    <string name="txtBorrar">Borrar</string>
+    <string name="txtModificar">Modificar</string>
+    <string name="btnEntrar">Entrar</string>
+    <string name="btnRegistrar">Registrarse</string>
+    <string name="ivLogoLogin">Logo de la aplicación</string>
+    <string name="txtsitio">Identificación del sitio</string>
+
 </resources>

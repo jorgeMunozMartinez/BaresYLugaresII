@@ -16,21 +16,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="84dp"
-        android:layout_marginLeft="84dp"
-        android:layout_marginTop="12dp"
         android:ems="10"
         android:hint="Nombre del sitio"
         android:inputType="textPersonName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/txtsitio" />
 
     <EditText
         android:id="@+id/txtComentario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="84dp"
-        android:layout_marginLeft="84dp"
-        android:layout_marginTop="12dp"
         android:ems="10"
         android:hint="Describa el sito"
         android:inputType="textPersonName"
@@ -41,8 +37,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
-        android:layout_marginLeft="92dp"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="10dp"
         android:text="¿Qué es?"
         app:layout_constraintStart_toStartOf="parent"
@@ -52,20 +47,20 @@
         android:id="@+id/btnGps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="108dp"
-        android:layout_marginLeft="108dp"
-        android:layout_marginTop="78dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="90dp"
+        android:background="@drawable/boton"
         android:text="My posición actual"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtComentario" />
 
     <Button
         android:id="@+id/btnGaleria"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="97dp"
+        android:layout_height="40dp"
         android:layout_marginStart="92dp"
-        android:layout_marginLeft="92dp"
         android:layout_marginTop="36dp"
+        android:background="@drawable/boton"
         android:text="Galeria"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnGps" />
@@ -73,10 +68,9 @@
     <ImageView
         android:id="@+id/imgFoto"
         android:layout_width="239dp"
-        android:layout_height="127dp"
-        android:layout_marginStart="73dp"
-        android:layout_marginLeft="73dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="161dp"
+        android:layout_marginStart="84dp"
+        android:layout_marginTop="16dp"
         android:src="@android:drawable/ic_menu_camera"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnGaleria" />
@@ -85,9 +79,9 @@
         android:id="@+id/btnNewRecom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="99dp"
-        android:layout_marginLeft="99dp"
+        android:layout_marginStart="68dp"
         android:layout_marginTop="10dp"
+        android:background="@drawable/boton"
         android:onClick="newRecom"
         android:text="Crear Recomendacion"
         app:layout_constraintStart_toStartOf="parent"
@@ -98,8 +92,8 @@
         android:layout_width="97dp"
         android:layout_height="40dp"
         android:layout_marginStart="92dp"
-        android:layout_marginLeft="92dp"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/boton"
         android:onClick="esBar"
         android:text="Bar"
         app:layout_constraintStart_toStartOf="parent"
@@ -110,8 +104,8 @@
         android:layout_width="97dp"
         android:layout_height="38dp"
         android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/boton"
         android:onClick="esLugar"
         android:text="Lugar"
         app:layout_constraintStart_toEndOf="@+id/btnBar"
@@ -121,9 +115,8 @@
         android:id="@+id/txtEs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintStart_toEndOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/txtComentario" />
 
@@ -131,8 +124,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
-        android:layout_marginLeft="92dp"
+        android:layout_marginStart="80dp"
         android:layout_marginBottom="7dp"
         android:text="Seleccione la imagen "
         app:layout_constraintBottom_toTopOf="@+id/btnGaleria"
@@ -142,14 +134,24 @@
 
     <Button
         android:id="@+id/btnFoto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="31dp"
-        android:layout_marginLeft="31dp"
+        android:layout_width="98dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="36dp"
+        android:background="@drawable/boton"
         android:text="Camara"
         app:layout_constraintStart_toEndOf="@+id/btnGaleria"
         app:layout_constraintTop_toBottomOf="@+id/btnGps" />
+
+    <TextView
+        android:id="@+id/txtsitio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/txtsitio"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 
 </android.support.constraint.ConstraintLayout>
