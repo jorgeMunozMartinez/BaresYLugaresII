@@ -2,8 +2,10 @@ package byl.baresylugares.Presentacion;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -236,6 +238,21 @@ public class listarRecomendaciones extends AppCompatActivity {
             intent.putExtra("Usuario", usuario);
             startActivity(intent);
             finish();
+        }else if(item.getItemId() ==R.id.btnSobreAutores){
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+            builder1.setMessage("Aplicación creada por Francisco de la Mata y Jorge Muñoz, para la asignatura GSI" +
+                    ", Gestión de Sitemas Informáticos.");
+            builder1.setCancelable(true);
+
+            builder1.setPositiveButton(
+                    "Ok",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
         }
         return super.onOptionsItemSelected(item);
     }

@@ -25,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -49,6 +50,7 @@ public class mapa extends AppCompatActivity implements OnMapReadyCallback, TaskL
     private Recomendacion recomendacion;
     private String latitud;
     private String longitud;
+    private MarkerOptions place1, place2;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private int REQUEST_LOCATION = 1;
@@ -81,14 +83,20 @@ public class mapa extends AppCompatActivity implements OnMapReadyCallback, TaskL
         mapFragment.getMapAsync(this);
         recomendacion = (Recomendacion) getIntent().getSerializableExtra("Recomendacion");
 
+        place1 = new MarkerOptions().position(new LatLng(Double.parseDouble(recomendacion.getLatitud()), Double.parseDouble(recomendacion.getLongitud()))).title(recomendacion.getNombreTajeta());
+
         btnGPSllegar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 GPS();
-                LatLng sydney = new LatLng(Double.parseDouble(latitud), Double.parseDouble(longitud));
-                map.addMarker(new MarkerOptions().position(sydney).title("origen"));
-                map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-                new FetchURL(mapa.this).execute(getUrl(  "driving"), "driving");
+                place2 = new MarkerOptions().position(new LatLng(Double.parseDouble(latitud), Double.parseDouble(longitud))).title("origen");
+                map.addMarker(place2);
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(Double.parseDouble(latitud), Double.parseDouble(longitud)))
+                        .zoom(11)
+                        .build();
+                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                new FetchURL(mapa.this).execute(getUrl( "driving"), "driving");
             }
         });
     }
@@ -99,17 +107,23 @@ public class mapa extends AppCompatActivity implements OnMapReadyCallback, TaskL
         String mode = "mode=" + directionMode;
         String parameters = str_origin + "&" + str_dest + "&" + mode;
         String output = "json";
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
+        //String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+recomendacion.getLatitud()+","+recomendacion.getLongitud()+"&destination="+latitud+","+longitud;
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=AIzaSyB1I0NJZELg6F13DSlu-TR6UsGbhY8XF6E";
         return url;
     }
+
+
 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map=googleMap;
-        LatLng sydney = new LatLng(Double.parseDouble(recomendacion.getLatitud()), Double.parseDouble(recomendacion.getLongitud()));
-        map.addMarker(new MarkerOptions().position(sydney).title(recomendacion.getNombreTajeta()));
-        map.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        map.addMarker(place1);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(new LatLng(Double.parseDouble(recomendacion.getLatitud()), Double.parseDouble(recomendacion.getLongitud())))
+                .zoom(14)
+                .build();
+        map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     @Override
@@ -218,6 +232,21 @@ public class mapa extends AppCompatActivity implements OnMapReadyCallback, TaskL
             intent.putExtra("Tipo",tipo);
             startActivity(intent);
             finish();
+        } if (item.getItemId() == R.id.btnSobreAutores) {
+            android.support.v7.app.AlertDialog.Builder builder1 = new android.support.v7.app.AlertDialog.Builder(this);
+            builder1.setMessage("Aplicación creada por Francisco de la Mata y Jorge Muñoz, para la asignatura GSI" +
+                    ", Gestión de Sitemas Informáticos.");
+            builder1.setCancelable(true);
+
+            builder1.setPositiveButton(
+                    "Ok",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            android.support.v7.app.AlertDialog alert11 = builder1.create();
+            alert11.show();
         }
         return super.onOptionsItemSelected(item);
     }

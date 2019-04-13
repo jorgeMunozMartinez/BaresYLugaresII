@@ -18,6 +18,7 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -107,7 +108,7 @@ public class crearRecomendacion extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setTitle("Creando Recomendación");
+        toolbar.setTitle("Crear Recomandación");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
@@ -425,6 +426,24 @@ public class crearRecomendacion extends AppCompatActivity {
             intent.putExtra("Usuario", user);
             startActivity(intent);
             finish();
+        }else if(item.getItemId() ==R.id.btnSobreAutores){
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+            builder1.setMessage("Aplicación creada por Francisco de la Mata y Jorge Muñoz, para la asignatura GSI" +
+                    ", Gestión de Sitemas Informáticos.");
+            builder1.setCancelable(true);
+
+            builder1.setPositiveButton(
+                    "Ok",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+
+
+
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
         }
         return super.onOptionsItemSelected(item);
     }
