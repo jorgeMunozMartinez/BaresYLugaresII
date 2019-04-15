@@ -4,4 +4,6 @@
     <item android:state_focused="true" android:state_pressed="true" android:drawable="@drawable/fondo_boton"  />
     <item android:state_focused="false" android:state_pressed="true" android:drawable="@drawable/fondo_boton" />
     <item android:drawable="@drawable/fondo_boton2" />
+
+
 </selector>
