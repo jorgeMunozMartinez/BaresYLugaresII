@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Presentacion.Menu">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="191dp"
+        android:layout_marginTop="56dp"
+        android:src="@drawable/logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.041"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
+
+    <Button
+        android:id="@+id/btnLugares"
+        android:layout_width="180dp"
+        android:layout_height="142dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/boton"
+        android:drawableBottom="@drawable/ic_lugar_24dp"
+        android:drawablePadding="6dp"
+        android:onClick="listarLugares"
+        android:padding="20dp"
+        android:text="@string/btnLugares"
+        android:textColor="@drawable/color_texto"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btnModificar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/btnBares"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <Button
+        android:id="@+id/btnModificar"
+        android:layout_width="180dp"
+        android:layout_height="142dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/boton"
+        android:drawableBottom="@drawable/ic_editar_location"
+        android:drawablePadding="6dp"
+        android:onClick="modificar"
+        android:padding="20dp"
+        android:text="@string/btnModificar"
+        android:textColor="@drawable/color_texto"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/btnCrear"
+        app:layout_constraintTop_toBottomOf="@+id/btnLugares" />
+
+    <Button
+        android:id="@+id/btnBares"
+        android:layout_width="180dp"
+        android:layout_height="142dp"
+        android:layout_marginStart="264dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/boton"
+        android:drawableBottom="@drawable/ic_bar"
+        android:drawablePadding="6dp"
+        android:onClick="listarBares"
+        android:padding="20dp"
+        android:text="@string/btnBares"
+        android:textColor="@drawable/color_texto"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btnCrear"
+        app:layout_constraintEnd_toStartOf="@+id/btnLugares"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <Button
+        android:id="@+id/btnCrear"
+        android:layout_width="180dp"
+        android:layout_height="142dp"
+        android:layout_marginStart="264dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/boton"
+        android:drawableBottom="@drawable/ic_crear"
+        android:drawablePadding="6dp"
+        android:onClick="crear"
+        android:padding="20dp"
+        android:text="@string/btnCrear"
+        android:textColor="@drawable/color_texto"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnModificar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnBares" />
+
+
+
+</android.support.constraint.ConstraintLayout>
