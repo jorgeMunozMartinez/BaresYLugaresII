@@ -143,8 +143,8 @@
         android:layout_height="40dp"
         android:layout_marginStart="12dp"
         android:layout_marginTop="36dp"
-        android:background="@drawable/boton"
         android:text="Camara"
+        android:background="@drawable/boton"
         android:textColor="@drawable/color_texto"
         app:layout_constraintStart_toEndOf="@+id/btnGaleria"
         app:layout_constraintTop_toBottomOf="@+id/btnGps" />

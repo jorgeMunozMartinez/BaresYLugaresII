@@ -83,6 +83,7 @@
         android:layout_marginEnd="63dp"
         android:layout_marginBottom="129dp"
         android:background="@drawable/boton"
+        android:textColor="@drawable/color_texto"
         android:elevation="20dp"
         android:onClick="createUser"
         android:text="@string/btnCreateUser"
