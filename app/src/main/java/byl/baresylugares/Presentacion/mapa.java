@@ -108,7 +108,7 @@ public class mapa extends AppCompatActivity implements OnMapReadyCallback, TaskL
         String parameters = str_origin + "&" + str_dest + "&" + mode;
         String output = "json";
         //String url ="https://maps.googleapis.com/maps/api/directions/json?origin="+recomendacion.getLatitud()+","+recomendacion.getLongitud()+"&destination="+latitud+","+longitud;
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=AIzaSyB1I0NJZELg6F13DSlu-TR6UsGbhY8XF6E";
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=AIzaSyBYn9FtVcCcwQZm3NdhwxuOb1pIBolFytI";
         return url;
     }
 
