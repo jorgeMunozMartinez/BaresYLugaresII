@@ -27,6 +27,7 @@ public class AdaptadorListaPropio extends RecyclerView.Adapter<AdaptadorListaPro
         void onItemClick(int position);
         void onItenClickBorrar(int position);
         void onItemClickGPS(int position);
+        void onItemClickModificar(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -76,6 +77,7 @@ public class AdaptadorListaPropio extends RecyclerView.Adapter<AdaptadorListaPro
         private ImageView imgTipoLugar;
         private Button btnBorrar;
         private Button btnGps;
+        private Button btnModificar;
 
         public AdaptadorViewHolder(View itemView, final OnItemClickListener listener) {
             super(itemView);
@@ -86,6 +88,7 @@ public class AdaptadorListaPropio extends RecyclerView.Adapter<AdaptadorListaPro
             imgTipoLugar = itemView.findViewById(R.id.imgTipoLugar);
             btnBorrar = itemView.findViewById(R.id.btnDelete);
             btnGps = itemView.findViewById(R.id.btnGPS);
+            btnModificar = itemView.findViewById(R.id.btnModificar);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -116,6 +119,15 @@ public class AdaptadorListaPropio extends RecyclerView.Adapter<AdaptadorListaPro
                         if(position!= RecyclerView.NO_POSITION){
                             listener.onItemClickGPS(position);
                         }
+                    }
+                }
+            });
+            btnModificar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(position!= RecyclerView.NO_POSITION){
+                        listener.onItemClickModificar(position);
                     }
                 }
             });

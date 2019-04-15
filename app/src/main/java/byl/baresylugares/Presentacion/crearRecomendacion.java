@@ -422,10 +422,19 @@ public class crearRecomendacion extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            Intent intent = new Intent(crearRecomendacion.this, Menu.class);
-            intent.putExtra("Usuario", user);
-            startActivity(intent);
-            finish();
+            if(funcion.equals("modificar")){
+                Intent intent = new Intent(crearRecomendacion.this, listarRecomendaciones.class);
+                intent.putExtra("Usuario", user);
+                intent.putExtra("Tipo", funcion);
+                startActivity(intent);
+                finish();
+            }else{
+                Intent intent = new Intent(crearRecomendacion.this, Menu.class);
+                intent.putExtra("Usuario", user);
+                startActivity(intent);
+                finish();
+            }
+
         }else if(item.getItemId() ==R.id.btnSobreAutores){
             AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
             builder1.setMessage("Aplicación creada por Francisco de la Mata y Jorge Muñoz, para la asignatura GSI" +

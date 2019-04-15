@@ -65,7 +65,7 @@
         android:layout_height="142dp"
         android:layout_marginTop="40dp"
         android:background="@drawable/boton"
-        android:drawableBottom="@drawable/ic_bar"
+        android:drawableBottom="@drawable/ic_bar_24"
         android:drawablePadding="6dp"
         android:onClick="listarBares"
         android:padding="20dp"

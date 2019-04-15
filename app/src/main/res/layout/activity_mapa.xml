@@ -24,13 +24,13 @@
 
     <Button
         android:id="@+id/btnGPSllegar"
-        android:background="@drawable/btngpsstyle"
-        android:layout_width="wrap_content"
+        android:layout_width="116dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
+        android:background="@drawable/btngps"
         android:text="Como llegar"
+        android:textColor="@drawable/color_texto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

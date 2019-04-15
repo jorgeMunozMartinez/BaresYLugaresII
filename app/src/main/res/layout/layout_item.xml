@@ -36,7 +36,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:background="@drawable/btngpsstyle"
+        android:background="@drawable/btngps"
+        android:textColor="@drawable/color_texto"
         android:text="GPS"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -61,6 +62,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginBottom="36dp"
         android:text="TextView"
+        android:maxLines="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgTipoLugar" />
 
@@ -73,6 +75,7 @@
         android:layout_marginLeft="24dp"
         android:layout_marginBottom="8dp"
         android:text="TextView"
+        android:maxLines="1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgTipoLugar" />
 

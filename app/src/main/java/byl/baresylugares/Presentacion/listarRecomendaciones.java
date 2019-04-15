@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,11 +24,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
+
 import byl.baresylugares.Dominio.Recomendacion;
 import byl.baresylugares.Dominio.Usuario;
 import byl.baresylugares.R;
@@ -148,6 +152,11 @@ public class listarRecomendaciones extends AppCompatActivity {
                                             public void onItemClickGPS(int position) {
                                                 Gps(listaR.get(position));
                                             }
+
+                                            @Override
+                                            public void onItemClickModificar(int position) {
+                                                modificar(listaR.get(position));
+                                            }
                                         });
                                     } else {
                                         adaptadorTipo = new AdaptadorLista(context, listaR);
@@ -190,33 +199,31 @@ public class listarRecomendaciones extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    private void Gps(Recomendacion r){
+    private void Gps(Recomendacion r) {
         Intent intent = new Intent(listarRecomendaciones.this, mapa.class);
         intent.putExtra("Usuario", usuario);
-        intent.putExtra("Recomendacion",r);
+        intent.putExtra("Recomendacion", r);
         intent.putExtra("Tipo", tipo);
         startActivity(intent);
         finish();
     }
 
+    private void modificar(Recomendacion r) {
+        Intent intent = new Intent(context, crearRecomendacion.class);
+        intent.putExtra("Usuario", usuario);
+        intent.putExtra("Recomendacion", r);
+        intent.putExtra("Tipo", tipo);
+        startActivity(intent);
+        finish();
+    }
 
     private void click(Recomendacion r) {
-        if (tipo.equals("modificar")) {
-            Intent intent = new Intent(context, crearRecomendacion.class);
-            intent.putExtra("Usuario", usuario);
-            intent.putExtra("Recomendacion", r);
-            intent.putExtra("Tipo", tipo);
-            startActivity(intent);
-            finish();
-        } else {
-
-            Intent intent = new Intent(context, mostarRecomendacion.class);
-            intent.putExtra("Usuario", usuario);
-            intent.putExtra("Recomendacion", r);
-            intent.putExtra("Tipo", tipo);
-            startActivity(intent);
-            finish();
-        }
+        Intent intent = new Intent(context, mostarRecomendacion.class);
+        intent.putExtra("Usuario", usuario);
+        intent.putExtra("Recomendacion", r);
+        intent.putExtra("Tipo", tipo);
+        startActivity(intent);
+        finish();
     }
 
     public void showToast(String r) {
@@ -238,7 +245,7 @@ public class listarRecomendaciones extends AppCompatActivity {
             intent.putExtra("Usuario", usuario);
             startActivity(intent);
             finish();
-        }else if(item.getItemId() ==R.id.btnSobreAutores){
+        } else if (item.getItemId() == R.id.btnSobreAutores) {
             AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
             builder1.setMessage("Aplicación creada por Francisco de la Mata y Jorge Muñoz, para la asignatura GSI" +
                     ", Gestión de Sitemas Informáticos.");
@@ -256,7 +263,8 @@ public class listarRecomendaciones extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    public void borrar(Recomendacion r){
+
+    public void borrar(Recomendacion r) {
         id = r.getid().toString();
         final ProgressDialog loading = ProgressDialog.show(this, "Subiendo...", "Espere por favor...", false, false);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, RECOM_URL_BORRAR,
@@ -275,7 +283,7 @@ public class listarRecomendaciones extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         loading.dismiss();
-                        showToast("error"+error.toString());
+                        showToast("error" + error.toString());
                     }
                 }) {
             @Override

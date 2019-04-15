@@ -20,7 +20,8 @@
         app:srcCompat="@color/colorPrimary" />
 
     <Button
-        android:background="@drawable/btngpsstyle"
+        android:background="@drawable/btngps"
+        android:textColor="@drawable/color_texto"
         android:id="@+id/btnGPS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -87,25 +88,27 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:background="@drawable/btngps"
+        android:textColor="@drawable/color_texto"
         android:id="@+id/btnModificar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/btngpsstyle"
         android:text="Modificar"
         app:layout_constraintStart_toEndOf="@+id/btnDelete"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:background="@drawable/btngps"
+        android:textColor="@drawable/color_texto"
         android:id="@+id/btnDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/btngpsstyle"
         android:text="Borrar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
