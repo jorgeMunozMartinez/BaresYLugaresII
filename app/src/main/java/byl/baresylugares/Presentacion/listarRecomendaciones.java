@@ -84,6 +84,7 @@ public class listarRecomendaciones extends AppCompatActivity {
         tipo = (String) getIntent().getSerializableExtra("Tipo");
         usuario = (Usuario) getIntent().getSerializableExtra("Usuario");
         listar();
+
     }
 
 
@@ -129,8 +130,6 @@ public class listarRecomendaciones extends AppCompatActivity {
                                             , usuario, latitud, longitud, imagen, tipo);
                                     rem.setid(id);
                                     listaR.add(rem);
-
-                                    showToast("Mostrando recomendaciones, hay: " + listaR.size());
                                     lstRecomendaciones = findViewById(R.id.lstRecomendaciones);
                                     RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                                     lstRecomendaciones.setLayoutManager(mLayoutManager);
@@ -174,6 +173,7 @@ public class listarRecomendaciones extends AppCompatActivity {
                                         });
                                     }
                                 }
+                                showToast("Mostrando recomendaciones, hay: " + listaR.size());
                             }
                         } catch (Exception e) {
                             Log.d("Hola", e.getMessage());
