@@ -89,14 +89,7 @@ public class mapa extends AppCompatActivity implements OnMapReadyCallback, TaskL
             @Override
             public void onClick(View v) {
                 GPS();
-                place2 = new MarkerOptions().position(new LatLng(Double.parseDouble(latitud), Double.parseDouble(longitud))).title("origen");
-                map.addMarker(place2);
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(Double.parseDouble(latitud), Double.parseDouble(longitud)))
-                        .zoom(11)
-                        .build();
-                map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                new FetchURL(mapa.this).execute(getUrl( "driving"), "driving");
+
             }
         });
     }
@@ -207,6 +200,14 @@ public class mapa extends AppCompatActivity implements OnMapReadyCallback, TaskL
                         }
                     };
                     locationManager.requestLocationUpdates("gps",5000,0,locationListener);
+                    place2 = new MarkerOptions().position(new LatLng(Double.parseDouble(latitud), Double.parseDouble(longitud))).title("origen");
+                    map.addMarker(place2);
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(new LatLng(Double.parseDouble(latitud), Double.parseDouble(longitud)))
+                            .zoom(11)
+                            .build();
+                    map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    new FetchURL(mapa.this).execute(getUrl( "driving"), "driving");
                 }
             }
         }
