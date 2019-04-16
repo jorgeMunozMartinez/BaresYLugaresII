@@ -44,6 +44,10 @@ import byl.baresylugares.Dominio.Usuario;
 import byl.baresylugares.R;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -53,7 +57,7 @@ import java.util.Map;
 
 import static android.view.Gravity.CENTER;
 
-public class crearRecomendacion extends AppCompatActivity {
+public class crearRecomendacion extends AppCompatActivity  {
 
 
     private int PICK_IMAGE = 0;
@@ -134,7 +138,9 @@ public class crearRecomendacion extends AppCompatActivity {
             es.setText(recomendacion.getTipo());
             tipo = recomendacion.getTipo();
             Picasso.with(this).load(recomendacion.getImagenBit()).into(imageView);
-            image = recomendacion.getImagenBit();
+
+            getBitmapFromURL(recomendacion.getImagenBit());
+
         }
 
         btnFoto.setOnClickListener(new View.OnClickListener() {
@@ -159,6 +165,29 @@ public class crearRecomendacion extends AppCompatActivity {
         });
 
 
+    }
+
+    public void getBitmapFromURL(String src) {
+        try {
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            bitmap = BitmapFactory.decodeStream(input);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            imageView.setImageBitmap(bitmap);
+            byte[] imageBytes = stream.toByteArray();
+            image = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+        } catch (Exception e) {
+            Intent intent = new Intent(crearRecomendacion.this, listarRecomendaciones.class);
+            intent.putExtra("Usuario", user);
+            intent.putExtra("Tipo", funcion);
+            startActivity(intent);
+            finish();
+        }
     }
 
     public void GPS() {
