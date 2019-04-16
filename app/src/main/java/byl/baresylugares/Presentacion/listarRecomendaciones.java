@@ -184,7 +184,7 @@ public class listarRecomendaciones extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         loading.dismiss();
-                        showToast("Error obteniedo recomendacioones Código Error: " + volleyError.getMessage());
+                        showToast("Error obteniedo recomendacioones Código Error: " + volleyError.toString());
                     }
                 }) {
             @Override

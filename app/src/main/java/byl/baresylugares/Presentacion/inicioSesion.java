@@ -108,7 +108,7 @@ public class inicioSesion extends AppCompatActivity {
                         @Override
                         public void onErrorResponse(VolleyError volleyError) {
                             loading.dismiss();
-                            showToast("Error hacer Login Código Error: " + volleyError.getMessage());
+                            showToast("Error hacer Login Código Error: " + volleyError.toString());
                         }
                     }) {
                 @Override
